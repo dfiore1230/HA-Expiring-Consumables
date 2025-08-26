@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.8 - 2025-08-26
+- Revert to original config flow
+
 ## 0.1.7 - 2025-08-26
 - More Blank Config Fixes
 
