@@ -4,9 +4,26 @@ import sys
 import types
 from pathlib import Path
 
+
 def test_config_flow_form_and_entry(monkeypatch):
     """Ensure the config flow shows a form and creates an entry."""
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "custom_components"))
+
+    vol_module = types.ModuleType("voluptuous")
+
+    class Schema:
+        def __init__(self, schema):
+            self.schema = schema
+
+        def __eq__(self, other):
+            return isinstance(other, Schema) and self.schema == other.schema
+
+        def __call__(self, data):
+            return data
+
+    vol_module.Schema = Schema
+    monkeypatch.setitem(sys.modules, "voluptuous", vol_module)
+    import voluptuous as vol
 
     ha_module = types.ModuleType("homeassistant")
     config_entries = types.ModuleType("homeassistant.config_entries")
@@ -33,9 +50,9 @@ def test_config_flow_form_and_entry(monkeypatch):
     result = asyncio.run(flow.async_step_user())
     assert result["type"] == "form"
     assert result["step_id"] == "user"
+    assert result["data_schema"] == vol.Schema({})
 
-    user_input = {"type": "filter", "duration": 30, "start_date": "2024-01-01"}
-    result = asyncio.run(flow.async_step_user(user_input=user_input))
+    result = asyncio.run(flow.async_step_user(user_input={}))
     assert result["type"] == "create_entry"
-    assert result["title"] == user_input["type"]
-    assert result["data"] == user_input
+    assert result["title"] == cf_module.NAME
+    assert result["data"] == {}
