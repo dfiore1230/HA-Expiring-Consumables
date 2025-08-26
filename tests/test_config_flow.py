@@ -41,20 +41,22 @@ def test_config_flow_form_and_entry(monkeypatch):
         pass
 
     config_entries.ConfigEntry = ConfigEntry
-    class OptionsFlow:
-        pass
 
-    config_entries.OptionsFlow = OptionsFlow
-
-    class DummyConfigFlow:
-        def __init_subclass__(cls, **kwargs):
-            pass
-
+    class BaseFlow:
         def async_create_entry(self, title, data, options=None):
             return {"type": "create_entry", "title": title, "data": data, "options": options}
 
         def async_show_form(self, step_id, data_schema, errors=None):
             return {"type": "form", "step_id": step_id, "data_schema": data_schema, "errors": errors}
+
+    class OptionsFlow(BaseFlow):
+        pass
+
+    config_entries.OptionsFlow = OptionsFlow
+
+    class DummyConfigFlow(BaseFlow):
+        def __init_subclass__(cls, **kwargs):
+            pass
 
     config_entries.ConfigFlow = DummyConfigFlow
     ha_module.config_entries = config_entries
@@ -168,11 +170,46 @@ def test_config_flow_form_and_entry(monkeypatch):
     assert result["options"][cf_module.CONF_DURATION_DAYS] == 30
     assert result["options"][cf_module.CONF_START_DATE] == "2024-01-01"
 
-    # Test expiry date override calculates start date correctly
     flow2 = cf_module.ConsumableConfigFlow()
     user_input2 = {
         cf_module.CONF_NAME: "Filter",
         cf_module.CONF_DURATION_DAYS: 30,
+        cf_module.CONF_START_DATE: "2024-01-01",
+        cf_module.CONF_EXPIRY_DATE_OVERRIDE: "2024-02-01",
+    }
+    result2 = asyncio.run(flow2.async_step_user(user_input=user_input2))
+    assert result2["options"][cf_module.CONF_START_DATE] == "2024-01-02"
+
+    # Test options flow handles expiry override strings
+    config_entry = cf_module.config_entries.ConfigEntry()
+    config_entry.data = {
+        cf_module.CONF_NAME: "Filter",
+        cf_module.CONF_ITEM_TYPE: None,
+        cf_module.CONF_ICON: None,
+    }
+    config_entry.options = {
+        cf_module.CONF_DURATION_DAYS: 30,
+        cf_module.CONF_START_DATE: "2024-01-01",
+    }
+
+    options_flow = cf_module.ConsumableOptionsFlowHandler(config_entry)
+
+    class DummyConfigEntries:
+        def async_update_entry(self, entry, data=None):
+            entry.data = data or entry.data
+
+    hass = core.HomeAssistant()
+    hass.config_entries = DummyConfigEntries()
+    options_flow.hass = hass
+
+    user_input3 = {
+        cf_module.CONF_NAME: "Filter",
+        cf_module.CONF_DURATION_DAYS: 30,
+        cf_module.CONF_START_DATE: "2024-01-01",
+        cf_module.CONF_EXPIRY_DATE_OVERRIDE: "2024-02-01",
+    }
+    result3 = asyncio.run(options_flow.async_step_init(user_input=user_input3))
+    assert result3["data"][cf_module.CONF_START_DATE] == "2024-01-02"
         cf_module.CONF_START_DATE: dt.date(2024, 1, 1),
         cf_module.CONF_EXPIRY_DATE_OVERRIDE: dt.date(2024, 2, 1),
     }

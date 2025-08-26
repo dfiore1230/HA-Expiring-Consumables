@@ -40,6 +40,11 @@ class ConsumableConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             start_date = user_input.get(CONF_START_DATE)
             expiry_override = user_input.get(CONF_EXPIRY_DATE_OVERRIDE)
 
+            if isinstance(start_date, str):
+                start_date = dt.date.fromisoformat(start_date)
+            if isinstance(expiry_override, str):
+                expiry_override = dt.date.fromisoformat(expiry_override)
+           
             if expiry_override:
                 start_date = expiry_override - dt.timedelta(days=duration)
 
@@ -102,6 +107,11 @@ class ConsumableOptionsFlowHandler(config_entries.OptionsFlow):
             duration = int(user_input[CONF_DURATION_DAYS])
             start_date = user_input.get(CONF_START_DATE)
             expiry_override = user_input.get(CONF_EXPIRY_DATE_OVERRIDE)
+
+            if isinstance(start_date, str):
+                start_date = dt.date.fromisoformat(start_date)
+            if isinstance(expiry_override, str):
+                expiry_override = dt.date.fromisoformat(expiry_override)
 
             if expiry_override:
                 start_date = expiry_override - dt.timedelta(days=duration)
