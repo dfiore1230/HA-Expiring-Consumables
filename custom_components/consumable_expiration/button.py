@@ -31,8 +31,8 @@ class MarkReplacedButton(ButtonEntity):
         return DeviceInfo(
             identifiers={(DOMAIN, self.entry.entry_id)},
             name=name,
-            manufacturer="Custom",
-            model="Consumable Expiration",
+            manufacturer="dfiore1230",
+            model="HA Expiring Consumables",
         )
 
     @property
