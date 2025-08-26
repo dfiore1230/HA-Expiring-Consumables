@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.6 - 2025-08-26
+- Blank Config Fixes
+
 ## 0.1.5 - 2025-08-26
 - Workflow Fixes
 
