@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.5 - 2025-08-26
+- Workflow Fixes
+
 ## 0.1.4 - 2025-08-26
 - Config Flow GUI Fix
 

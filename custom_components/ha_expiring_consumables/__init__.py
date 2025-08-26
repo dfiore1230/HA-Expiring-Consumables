@@ -2,7 +2,7 @@
 
 from .const import DOMAIN
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 
 
 async def async_setup_entry(hass, entry):
