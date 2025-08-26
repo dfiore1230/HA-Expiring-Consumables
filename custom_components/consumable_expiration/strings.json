@@ -1,6 +1,6 @@
 
 {
-  "title": "Consumable Expiration",
+  "title": "HA Expiring Consumables",
   "config": {
     "step": {
       "user": {
