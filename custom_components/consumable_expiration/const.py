@@ -7,6 +7,7 @@ CONF_NAME = "name"
 CONF_ITEM_TYPE = "item_type"
 CONF_DURATION_DAYS = "duration_days"
 CONF_START_DATE = "start_date"
+CONF_EXPIRY_DATE_OVERRIDE = "expiry_date_override"
 CONF_ICON = "icon"
 
 # Default icon mapping for common items (Material Design Icons names)
