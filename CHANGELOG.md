@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.2 - 2025-08-26
+- Prepare package metadata for release.
+
 ## 0.1.1 - 2025-08-26
 - Add Home Assistant manifest.
 - Set code owner to @dfiore1230.
