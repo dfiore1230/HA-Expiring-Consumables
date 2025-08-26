@@ -2,11 +2,10 @@
 from __future__ import annotations
 
 import datetime as dt
-from dataclasses import dataclass
 from typing import Any
 
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.components.sensor.const import SensorDeviceClass, SensorStateClass
+from homeassistant.components.sensor.const import SensorStateClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity import DeviceInfo
@@ -17,7 +16,6 @@ from homeassistant.util import dt as dt_util
 from .const import (
     DOMAIN,
     CONF_NAME,
-    CONF_ITEM_TYPE,
     CONF_DURATION_DAYS,
     CONF_START_DATE,
     CONF_ICON,
@@ -42,9 +40,8 @@ class ConsumableExpirationSensor(SensorEntity):
         self.entry = entry
         self._attr_unique_id = f"{entry.entry_id}_days_remaining"
         # Map entity id to entry for services
-        hass.data[DOMAIN]["entity_map"][
-            self.entity_id if hasattr(self, "entity_id") else self._attr_unique_id
-        ] = entry.entry_id
+        key = self.entity_id if self.entity_id else self._attr_unique_id
+        hass.data[DOMAIN]["entity_map"][key] = entry.entry_id
         self._unsub_midnight = None
 
     async def async_added_to_hass(self) -> None:
