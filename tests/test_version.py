@@ -39,10 +39,16 @@ def test_import_version(monkeypatch):
 
     helpers = types.ModuleType("homeassistant.helpers")
     entity_registry = types.ModuleType("homeassistant.helpers.entity_registry")
+    config_validation = types.ModuleType("homeassistant.helpers.config_validation")
     def async_get(hass):
         return object()
     entity_registry.async_get = async_get
+    def _cv_identity(value):
+        return value
+    config_validation.entity_id = _cv_identity
+    config_validation.date = _cv_identity
     helpers.entity_registry = entity_registry
+    helpers.config_validation = config_validation
 
     monkeypatch.setitem(sys.modules, "homeassistant", ha_module)
     monkeypatch.setitem(sys.modules, "homeassistant.config_entries", config_entries)
@@ -50,6 +56,7 @@ def test_import_version(monkeypatch):
     monkeypatch.setitem(sys.modules, "homeassistant.core", core)
     monkeypatch.setitem(sys.modules, "homeassistant.helpers", helpers)
     monkeypatch.setitem(sys.modules, "homeassistant.helpers.entity_registry", entity_registry)
+    monkeypatch.setitem(sys.modules, "homeassistant.helpers.config_validation", config_validation)
 
     pkg = importlib.import_module("consumable_expiration")
     assert pkg is not None

@@ -36,6 +36,11 @@ def test_config_flow_form_and_entry(monkeypatch):
     selector = types.ModuleType("homeassistant.helpers.selector")
     const_module = types.ModuleType("homeassistant.const")
     entity_registry = types.ModuleType("homeassistant.helpers.entity_registry")
+    config_validation = types.ModuleType("homeassistant.helpers.config_validation")
+    def _cv_identity(value):
+        return value
+    config_validation.entity_id = _cv_identity
+    config_validation.date = _cv_identity
 
     class ConfigEntry:
         pass
@@ -139,6 +144,7 @@ def test_config_flow_form_and_entry(monkeypatch):
     entity_registry.async_get = async_get
     helpers.selector = selector
     helpers.entity_registry = entity_registry
+    helpers.config_validation = config_validation
     ha_module.helpers = helpers
 
     monkeypatch.setitem(sys.modules, "homeassistant", ha_module)
@@ -148,6 +154,7 @@ def test_config_flow_form_and_entry(monkeypatch):
     monkeypatch.setitem(sys.modules, "homeassistant.helpers", helpers)
     monkeypatch.setitem(sys.modules, "homeassistant.helpers.selector", selector)
     monkeypatch.setitem(sys.modules, "homeassistant.helpers.entity_registry", entity_registry)
+    monkeypatch.setitem(sys.modules, "homeassistant.helpers.config_validation", config_validation)
     monkeypatch.setitem(sys.modules, "homeassistant.const", const_module)
 
     cf_module = importlib.import_module("consumable_expiration.config_flow")

@@ -3,13 +3,13 @@ from __future__ import annotations
 
 import datetime as dt
 import logging
-from typing import Any
 
 import voluptuous as vol
+import homeassistant.helpers.config_validation as cv
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant, ServiceCall, callback
+from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import entity_registry as er
 
 from .const import (
@@ -36,9 +36,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     changed = False
 
     if CONF_DURATION_DAYS not in options and CONF_DURATION_DAYS in data:
-        options[CONF_DURATION_DAYS] = data[CONF_DURATION_DAYS]; changed = True
+        options[CONF_DURATION_DAYS] = data[CONF_DURATION_DAYS]
+        changed = True
     if CONF_START_DATE not in options and CONF_START_DATE in data:
-        options[CONF_START_DATE] = data[CONF_START_DATE]; changed = True
+        options[CONF_START_DATE] = data[CONF_START_DATE]
+        changed = True
 
     if changed:
         hass.config_entries.async_update_entry(entry, options=options)
@@ -85,25 +87,32 @@ def _register_services(hass: HomeAssistant) -> None:
             raise vol.Invalid(f"Could not resolve config entry for {entity_id}")
         return hass.config_entries.async_get_entry(entry_id)
 
+    set_start_date_schema = vol.Schema(
+        {
+            vol.Required("entity_id"): cv.entity_id,
+            vol.Required("start_date"): cv.date,
+        }
+    )
+    set_duration_schema = vol.Schema(
+        {
+            vol.Required("entity_id"): cv.entity_id,
+            vol.Required("duration_days"): vol.All(vol.Coerce(int), vol.Range(min=1)),
+        }
+    )
+    mark_replaced_schema = vol.Schema({vol.Required("entity_id"): cv.entity_id})
+
     async def handle_set_start(call: ServiceCall):
         entity_id = call.data["entity_id"]
-        start_date_str = call.data["start_date"]
+        new_date: dt.date = call.data["start_date"]
         entry = await _resolve_entry_from_entity(hass, entity_id)
         if not entry:
             return
-        try:
-            # Accept YYYY-MM-DD
-            new_date = dt.date.fromisoformat(start_date_str)
-        except Exception as exc:
-            raise vol.Invalid("start_date must be YYYY-MM-DD") from exc
         options = {**entry.options, CONF_START_DATE: new_date.isoformat()}
         hass.config_entries.async_update_entry(entry, options=options)
 
     async def handle_set_duration(call: ServiceCall):
         entity_id = call.data["entity_id"]
-        days = int(call.data["duration_days"])
-        if days < 1:
-            raise vol.Invalid("duration_days must be >= 1")
+        days: int = call.data["duration_days"]
         entry = await _resolve_entry_from_entity(hass, entity_id)
         if not entry:
             return
@@ -120,12 +129,12 @@ def _register_services(hass: HomeAssistant) -> None:
         hass.config_entries.async_update_entry(entry, options=options)
 
     hass.services.async_register(
-        DOMAIN, "set_start_date", handle_set_start
+        DOMAIN, "set_start_date", handle_set_start, schema=set_start_date_schema
     )
     hass.services.async_register(
-        DOMAIN, "set_duration", handle_set_duration
+        DOMAIN, "set_duration", handle_set_duration, schema=set_duration_schema
     )
     hass.services.async_register(
-        DOMAIN, "mark_replaced", handle_mark_replaced
+        DOMAIN, "mark_replaced", handle_mark_replaced, schema=mark_replaced_schema
     )
     hass.data[DOMAIN]["services_registered"] = True
