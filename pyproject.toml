@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ha-expiring-consumables"
+version = "0.1.0"
+description = "Home Assistant plugin to track consumables"
+readme = "README.md"
+authors = [{name = "Unknown"}]
+requires-python = ">=3.9"
+
+[project.urls]
+Home = "https://github.com/user/HA-Expiring-Consumables"
