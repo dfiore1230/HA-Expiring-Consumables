@@ -5,5 +5,6 @@
   "documentation": "https://github.com/user/HA-Expiring-Consumables",
   "requirements": [],
   "dependencies": [],
-  "codeowners": ["@dfiore1230"]
+  "codeowners": ["@dfiore1230"],
+  "config_flow": true
 }
