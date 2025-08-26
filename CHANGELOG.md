@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.4 - 2025-08-26
+- Config Flow GUI Fix
+
 ## 0.1.3 - 2025-08-26
 - Setup deps to ensure this works via HACS
 
