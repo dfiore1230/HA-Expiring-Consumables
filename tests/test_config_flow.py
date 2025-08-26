@@ -170,7 +170,6 @@ def test_config_flow_form_and_entry(monkeypatch):
     assert result["options"][cf_module.CONF_DURATION_DAYS] == 30
     assert result["options"][cf_module.CONF_START_DATE] == "2024-01-01"
 
-    # Test expiry date override calculates start date correctly when provided as strings
     flow2 = cf_module.ConsumableConfigFlow()
     user_input2 = {
         cf_module.CONF_NAME: "Filter",
