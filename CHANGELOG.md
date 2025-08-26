@@ -3,6 +3,10 @@
 ## 0.1.10 - 2025-08-26
 - Link sensor and button to a renamable device
 
+## Unreleased
+- Allow reconfiguring consumables from the UI including name, type, duration and expiry date override
+- Fix expiry date override parsing when provided as a string
+
 ## 0.1.8 - 2025-08-26
 - 10th Tries a charm?
 
