@@ -1,12 +1,12 @@
 {
   "domain": "consumable_expiration",
-  "name": "Consumable Expiration",
-  "version": "0.1.9",
-  "documentation": "https://example.com/consumable_expiration",
+  "name": "HA Consumable Expiration",
+  "version": "0.1.10",
+  "documentation": "https://github.com/dfiore1230/HA-Expiring-Consumables",
   "dependencies": [],
   "requirements": [],
   "codeowners": [
-    "@your-handle"
+    "@dfiore1230"
   ],
   "config_flow": true,
   "iot_class": "calculated"

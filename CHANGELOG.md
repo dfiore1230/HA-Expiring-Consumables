@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.9 - 2025-08-26
+## 0.1.10 - 2025-08-26
 - Link sensor and button to a renamable device
 
 ## 0.1.8 - 2025-08-26
