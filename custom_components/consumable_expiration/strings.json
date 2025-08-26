@@ -1,0 +1,50 @@
+
+{
+  "title": "Consumable Expiration",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add a consumable",
+        "description": "Create a sensor that counts days remaining until replacement is due."
+      }
+    },
+    "error": {
+      "invalid_duration": "Duration must be at least 1 day."
+    },
+    "abort": {}
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Edit consumable",
+        "description": "Update duration, start date, or icon."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "days_remaining": {
+        "name": "Days Remaining"
+      }
+    },
+    "button": {
+      "mark_replaced": {
+        "name": "Mark Replaced"
+      }
+    }
+  },
+  "services": {
+    "set_start_date": {
+      "name": "Set start date",
+      "description": "Set the start/replace date for a consumable entity (YYYY-MM-DD)."
+    },
+    "set_duration": {
+      "name": "Set duration (days)",
+      "description": "Update the duration in days for a consumable entity."
+    },
+    "mark_replaced": {
+      "name": "Mark replaced today",
+      "description": "Sets the start date to today."
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "domain": "consumable_expiration",
+  "name": "Consumable Expiration",
+  "version": "0.1.0",
+  "documentation": "https://example.com/consumable_expiration",
+  "dependencies": [],
+  "requirements": [],
+  "codeowners": [
+    "@your-handle"
+  ],
+  "config_flow": true,
+  "iot_class": "calculated"
+}
