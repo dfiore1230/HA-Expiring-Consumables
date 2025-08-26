@@ -33,17 +33,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 
 class ConsumableExpirationSensor(SensorEntity):
     _attr_has_entity_name = True
+    _attr_translation_key = "days_remaining"
     _attr_native_unit_of_measurement = "days"
     _attr_state_class = SensorStateClass.MEASUREMENT
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         self.hass = hass
         self.entry = entry
-        name = entry.data.get(CONF_NAME, "Consumable")
-        self._attr_name = f"{name} Days Remaining"
         self._attr_unique_id = f"{entry.entry_id}_days_remaining"
         # Map entity id to entry for services
-        hass.data[DOMAIN]["entity_map"][self.entity_id if hasattr(self, "entity_id") else self._attr_unique_id] = entry.entry_id
+        hass.data[DOMAIN]["entity_map"][
+            self.entity_id if hasattr(self, "entity_id") else self._attr_unique_id
+        ] = entry.entry_id
         self._unsub_midnight = None
 
     async def async_added_to_hass(self) -> None:
