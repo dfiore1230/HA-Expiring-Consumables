@@ -192,7 +192,7 @@ def test_config_flow_form_and_entry(monkeypatch):
         cf_module.CONF_START_DATE: "2024-01-01",
     }
 
-    options_flow = cf_module.ConsumableOptionsFlowHandler(config_entry)
+    options_flow = cf_module.ConsumableConfigFlow.async_get_options_flow(config_entry)
 
     class DummyConfigEntries:
         def async_update_entry(self, entry, data=None):

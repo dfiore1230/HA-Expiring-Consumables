@@ -90,6 +90,12 @@ class ConsumableConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
 
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry: config_entries.ConfigEntry):
+        """Get the options flow for this handler."""
+        return ConsumableOptionsFlowHandler(config_entry)
+
 
 class ConsumableOptionsFlowHandler(config_entries.OptionsFlow):
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
@@ -159,8 +165,3 @@ class ConsumableOptionsFlowHandler(config_entries.OptionsFlow):
             vol.Optional(CONF_EXPIRY_DATE_OVERRIDE, default=due_date): selector.DateSelector(),
         })
         return self.async_show_form(step_id="init", data_schema=schema)
-
-    @staticmethod
-    @callback
-    def async_get_options_flow(config_entry: config_entries.ConfigEntry):
-        return ConsumableOptionsFlowHandler(config_entry)
