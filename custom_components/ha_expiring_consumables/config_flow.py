@@ -14,4 +14,13 @@ class HAExpiringConsumablesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step initiated by the user."""
-        return self.async_create_entry(title=NAME, data={})
+        if user_input is None:
+            data_schema = {
+                "type": str,
+                "duration": int,
+                "start_date": str,
+            }
+            return self.async_show_form(step_id="user", data_schema=data_schema)
+
+        title = user_input.get("type", NAME)
+        return self.async_create_entry(title=title, data=user_input)
