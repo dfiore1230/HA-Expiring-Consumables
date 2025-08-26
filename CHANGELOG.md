@@ -1,6 +1,9 @@
 # Changelog
 
-## 0.1.11 - 2025-08026
+## 0.1.12 - 2025-08-26
+- Bug fixes for Expiration Override
+
+## 0.1.11 - 2025-08-26
 - Allow reconfiguring consumables from the UI including name, type, duration and expiry date override
 
 ## 0.1.10 - 2025-08-26
