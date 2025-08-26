@@ -5,7 +5,15 @@
     "step": {
       "user": {
         "title": "Add a consumable",
-        "description": "Create a sensor that counts days remaining until replacement is due."
+        "description": "Create a sensor that counts days remaining until replacement is due.",
+        "data": {
+          "name": "Name",
+          "item_type": "Item type",
+          "icon": "Icon",
+          "duration_days": "Duration (days)",
+          "start_date": "Start date",
+          "expiry_date_override": "Expiry date override"
+        }
       }
     },
     "error": {
@@ -17,7 +25,15 @@
     "step": {
       "init": {
         "title": "Edit consumable",
-        "description": "Update duration, start date, or icon."
+        "description": "Update name, type, duration, start date, icon, or override expiry date.",
+        "data": {
+          "name": "Name",
+          "item_type": "Item type",
+          "icon": "Icon",
+          "duration_days": "Duration (days)",
+          "start_date": "Start date",
+          "expiry_date_override": "Expiry date override"
+        }
       }
     }
   },
