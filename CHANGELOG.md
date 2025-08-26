@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.3 - 2025-08-26
+- Setup deps to ensure this works via HACS
+
 ## 0.1.2 - 2025-08-26
 - Prepare package metadata for release.
 
