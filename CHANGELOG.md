@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.11 - 2025-08026
+- Allow reconfiguring consumables from the UI including name, type, duration and expiry date override
+
 ## 0.1.10 - 2025-08-26
 - Link sensor and button to a renamable device
 

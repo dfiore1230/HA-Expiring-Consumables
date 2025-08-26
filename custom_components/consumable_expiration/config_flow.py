@@ -44,7 +44,7 @@ class ConsumableConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 start_date = dt.date.fromisoformat(start_date)
             if isinstance(expiry_override, str):
                 expiry_override = dt.date.fromisoformat(expiry_override)
-
+           
             if expiry_override:
                 start_date = expiry_override - dt.timedelta(days=duration)
 

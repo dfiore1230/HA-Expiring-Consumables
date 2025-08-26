@@ -170,7 +170,6 @@ def test_config_flow_form_and_entry(monkeypatch):
     assert result["options"][cf_module.CONF_DURATION_DAYS] == 30
     assert result["options"][cf_module.CONF_START_DATE] == "2024-01-01"
 
-    # Test expiry date override calculates start date correctly when provided as strings
     flow2 = cf_module.ConsumableConfigFlow()
     user_input2 = {
         cf_module.CONF_NAME: "Filter",
@@ -211,3 +210,8 @@ def test_config_flow_form_and_entry(monkeypatch):
     }
     result3 = asyncio.run(options_flow.async_step_init(user_input=user_input3))
     assert result3["data"][cf_module.CONF_START_DATE] == "2024-01-02"
+        cf_module.CONF_START_DATE: dt.date(2024, 1, 1),
+        cf_module.CONF_EXPIRY_DATE_OVERRIDE: dt.date(2024, 2, 1),
+    }
+    result2 = asyncio.run(flow2.async_step_user(user_input=user_input2))
+    assert result2["options"][cf_module.CONF_START_DATE] == "2024-01-02"
