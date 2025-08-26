@@ -13,5 +13,8 @@ requires-python = ">=3.9"
 [project.urls]
 Home = "https://github.com/user/HA-Expiring-Consumables"
 
+[tool.setuptools.packages.find]
+where = ["custom_components"]
+
 [tool.setuptools.package-data]
 ha_expiring_consumables = ["manifest.json"]
