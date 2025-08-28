@@ -1,7 +1,7 @@
 {
   "domain": "consumable_expiration",
   "name": "HA Expiring Consumables",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "documentation": "https://github.com/dfiore1230/HA-Expiring-Consumables",
   "dependencies": [],
   "requirements": [],

@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.13 - 2025-08-28
+- Allow reconfiguring consumables from the UI
+
 ## 0.1.12 - 2025-08-26
 - Bug fixes for Expiration Override
 
