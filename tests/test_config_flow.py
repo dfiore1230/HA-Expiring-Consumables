@@ -217,3 +217,46 @@ def test_config_flow_form_and_entry(monkeypatch):
     }
     result3 = asyncio.run(options_flow.async_step_init(user_input=user_input3))
     assert result3["data"][cf_module.CONF_START_DATE] == "2024-01-02"
+
+    # Test reconfigure flow delegates to options flow
+    config_entry2 = cf_module.config_entries.ConfigEntry()
+    config_entry2.entry_id = "abc123"
+    config_entry2.data = {
+        cf_module.CONF_NAME: "Old", 
+        cf_module.CONF_ITEM_TYPE: None,
+        cf_module.CONF_ICON: None,
+    }
+    config_entry2.options = {
+        cf_module.CONF_DURATION_DAYS: 10,
+        cf_module.CONF_START_DATE: "2024-01-01",
+    }
+
+    class DummyConfigEntries2:
+        def __init__(self, entry):
+            self._entry = entry
+
+        def async_get_entry(self, entry_id):
+            return self._entry
+
+        def async_update_entry(self, entry, data=None):
+            entry.data = data or entry.data
+
+    hass2 = core.HomeAssistant()
+    hass2.config_entries = DummyConfigEntries2(config_entry2)
+
+    flow3 = cf_module.ConsumableConfigFlow()
+    flow3.hass = hass2
+    flow3.context = {"entry_id": "abc123"}
+
+    result4 = asyncio.run(flow3.async_step_reconfigure())
+    assert result4["type"] == "form"
+
+    user_input4 = {
+        cf_module.CONF_NAME: "New",
+        cf_module.CONF_DURATION_DAYS: 20,
+        cf_module.CONF_START_DATE: dt.date(2024, 1, 1),
+    }
+    result5 = asyncio.run(flow3.async_step_reconfigure(user_input=user_input4))
+    assert result5["type"] == "create_entry"
+    assert config_entry2.data[cf_module.CONF_NAME] == "New"
+    assert result5["data"][cf_module.CONF_DURATION_DAYS] == 20

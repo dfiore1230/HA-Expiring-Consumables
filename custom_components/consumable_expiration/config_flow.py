@@ -90,6 +90,24 @@ class ConsumableConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
 
+    async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+        """Allow reconfiguration of an existing entry.
+
+        Home Assistant will invoke this step when the user selects
+        the *Reconfigure* option for the integration. We simply
+        delegate to the options flow, so the same form is used for
+        both initial configuration and editing existing entries.
+        """
+
+        entry_id = self.context.get("entry_id")
+        entry = self.hass.config_entries.async_get_entry(entry_id) if entry_id else None
+        if not entry:
+            return self.async_abort(reason="entry_not_found")
+
+        handler = ConsumableOptionsFlowHandler(entry)
+        handler.hass = self.hass
+        return await handler.async_step_init(user_input)
+
     @staticmethod
     @callback
     def async_get_options_flow(config_entry: config_entries.ConfigEntry):
