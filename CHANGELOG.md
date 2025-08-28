@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.14 - 2025-08-28
+- Remove mandatory fields restriction in editing
+
 ## 0.1.13 - 2025-08-28
 - Allow reconfiguring consumables from the UI
 

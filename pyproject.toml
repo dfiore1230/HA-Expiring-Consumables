@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ha-expiring-consumables"
-version = "0.1.13"
+version = "0.1.14"
 description = "Home Assistant plugin to track consumables"
 readme = "README.md"
 authors = [{name = "dfiore1230"}]
