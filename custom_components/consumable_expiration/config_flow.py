@@ -124,11 +124,11 @@ class ConsumableOptionsFlowHandler(config_entries.OptionsFlow):
         options = self.config_entry.options
 
         if user_input is not None:
-            name = user_input[CONF_NAME].strip()
-            item_type = user_input.get(CONF_ITEM_TYPE)
-            icon = user_input.get(CONF_ICON)
-            duration = int(user_input[CONF_DURATION_DAYS])
-            start_date = user_input.get(CONF_START_DATE)
+            name = (user_input.get(CONF_NAME) or data.get(CONF_NAME, "")).strip()
+            item_type = user_input.get(CONF_ITEM_TYPE, data.get(CONF_ITEM_TYPE))
+            icon = user_input.get(CONF_ICON, data.get(CONF_ICON))
+            duration = int(user_input.get(CONF_DURATION_DAYS, options.get(CONF_DURATION_DAYS)))
+            start_date = user_input.get(CONF_START_DATE, options.get(CONF_START_DATE))
             expiry_override = user_input.get(CONF_EXPIRY_DATE_OVERRIDE)
 
             if isinstance(start_date, str):
@@ -147,12 +147,13 @@ class ConsumableOptionsFlowHandler(config_entries.OptionsFlow):
             })
             self.hass.config_entries.async_update_entry(self.config_entry, data=new_data)
 
-            new_options = {
+            new_options = options.copy()
+            new_options.update({
                 CONF_DURATION_DAYS: duration,
                 CONF_START_DATE: start_date.isoformat()
                 if hasattr(start_date, "isoformat")
                 else str(start_date),
-            }
+            })
             return self.async_create_entry(title="", data=new_options)
 
         # Parse existing date
@@ -168,7 +169,7 @@ class ConsumableOptionsFlowHandler(config_entries.OptionsFlow):
         due_date = current_date + dt.timedelta(days=duration)
 
         schema = vol.Schema({
-            vol.Required(CONF_NAME, default=data.get(CONF_NAME)): selector.TextSelector(),
+            vol.Optional(CONF_NAME, default=data.get(CONF_NAME)): selector.TextSelector(),
             vol.Optional(CONF_ITEM_TYPE, default=data.get(CONF_ITEM_TYPE)): selector.SelectSelector(
                 selector.SelectSelectorConfig(
                     options=list(DEFAULT_ICON_MAP.keys()),
@@ -176,10 +177,10 @@ class ConsumableOptionsFlowHandler(config_entries.OptionsFlow):
                 )
             ),
             vol.Optional(CONF_ICON, default=data.get(CONF_ICON)): selector.IconSelector(),
-            vol.Required(CONF_DURATION_DAYS, default=duration): selector.NumberSelector(
+            vol.Optional(CONF_DURATION_DAYS, default=duration): selector.NumberSelector(
                 selector.NumberSelectorConfig(min=1, max=1825, step=1, mode=selector.NumberSelectorMode.BOX)
             ),
-            vol.Required(CONF_START_DATE, default=current_date): selector.DateSelector(),
-            vol.Optional(CONF_EXPIRY_DATE_OVERRIDE, default=due_date): selector.DateSelector(),
+            vol.Optional(CONF_START_DATE, default=current_date): selector.DateSelector(),
+            vol.Optional(CONF_EXPIRY_DATE_OVERRIDE): selector.DateSelector(),
         })
         return self.async_show_form(step_id="init", data_schema=schema)
