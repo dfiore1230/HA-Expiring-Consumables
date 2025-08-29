@@ -141,13 +141,34 @@ class ConsumableOptionsFlowHandler(config_entries.OptionsFlow):
         options = self.config_entry.options
 
         if user_input is not None:
-            name = (user_input.get(CONF_NAME) or data.get(CONF_NAME, "")).strip()
-            item_type = user_input.get(CONF_ITEM_TYPE) or data.get(CONF_ITEM_TYPE)
-            icon = user_input.get(CONF_ICON) or data.get(CONF_ICON)
-            duration = int(
-                user_input.get(CONF_DURATION_DAYS) or options.get(CONF_DURATION_DAYS)
+            name = user_input.get(CONF_NAME)
+            if name is None:
+                name = data.get(CONF_NAME, "")
+            else:
+                name = name.strip()
+
+            item_type = (
+                user_input[CONF_ITEM_TYPE]
+                if CONF_ITEM_TYPE in user_input and user_input[CONF_ITEM_TYPE] is not None
+                else data.get(CONF_ITEM_TYPE)
             )
-            start_date = user_input.get(CONF_START_DATE) or options.get(CONF_START_DATE)
+            icon = (
+                user_input[CONF_ICON]
+                if CONF_ICON in user_input and user_input[CONF_ICON] is not None
+                else data.get(CONF_ICON)
+            )
+            duration_in = (
+                user_input[CONF_DURATION_DAYS]
+                if CONF_DURATION_DAYS in user_input and user_input[CONF_DURATION_DAYS] is not None
+                else options.get(CONF_DURATION_DAYS)
+            )
+            duration = int(duration_in)
+            start_in = (
+                user_input[CONF_START_DATE]
+                if CONF_START_DATE in user_input and user_input[CONF_START_DATE] is not None
+                else options.get(CONF_START_DATE)
+            )
+            start_date = start_in
             expiry_override = user_input.get(CONF_EXPIRY_DATE_OVERRIDE)
 
             if isinstance(start_date, str):
