@@ -266,6 +266,32 @@ def test_config_flow_form_and_entry(monkeypatch):
     assert result_partial["data"][cf_module.CONF_START_DATE] == "2024-01-01"
     assert config_entry_partial.data[cf_module.CONF_NAME] == "Updated"
 
+    # None values should preserve existing fields
+    config_entry_none = cf_module.config_entries.ConfigEntry()
+    config_entry_none.data = {
+        cf_module.CONF_NAME: "Filter",
+        cf_module.CONF_ITEM_TYPE: "typeA",
+        cf_module.CONF_ICON: "mdi:filter",
+    }
+    config_entry_none.options = {
+        cf_module.CONF_DURATION_DAYS: 30,
+        cf_module.CONF_START_DATE: "2024-01-01",
+    }
+    options_flow_none = cf_module.ConsumableConfigFlow.async_get_options_flow(config_entry_none)
+    options_flow_none.hass = hass
+    asyncio.run(options_flow_none.async_step_init())
+    user_none = {
+        cf_module.CONF_NAME: "Updated",
+        cf_module.CONF_ITEM_TYPE: None,
+        cf_module.CONF_ICON: None,
+        cf_module.CONF_DURATION_DAYS: None,
+        cf_module.CONF_START_DATE: None,
+    }
+    result_none = asyncio.run(options_flow_none.async_step_init(user_input=user_none))
+    assert config_entry_none.data[cf_module.CONF_ITEM_TYPE] == "typeA"
+    assert config_entry_none.data[cf_module.CONF_ICON] == "mdi:filter"
+    assert result_none["data"][cf_module.CONF_START_DATE] == "2024-01-01"
+
     # Test reconfigure flow delegates to options flow
     config_entry2 = cf_module.config_entries.ConfigEntry()
     config_entry2.entry_id = "abc123"

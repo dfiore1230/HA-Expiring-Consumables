@@ -1,7 +1,7 @@
 # Changelog
 
 ## 0.1.16 - 2025-08-29
-- Set default state of replace button to idle, set override expiry date to respect override start date + days
+- Allow editing consumables without re-entering unchanged fields
 
 ## 0.1.15 - 2025-08-29
 - Set default state of replace button to idle, set override expiry date to respect override start date + days
