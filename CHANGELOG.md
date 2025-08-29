@@ -1,7 +1,7 @@
 # Changelog
 
 ## 0.1.15 - 2025-08-28
-- Bump version to 0.1.15
+- Set default state of replace button to idle, set override expiry date to respect override start date + days
 
 ## 0.1.14 - 2025-08-28
 - Remove mandatory fields restriction in editing
