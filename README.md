@@ -27,6 +27,7 @@ Home Assistant custom integration to track the life span of consumable items suc
    - `consumable_expiration.mark_replaced`
 
 ## Changelog
+- **0.1.19** - Fix button idle state and partial option updates
 - **0.1.18** - Allow reconfiguring consumables from the UI including name, type, duration and expiry date override
              - Fix expiry date override parsing when provided as a string
              - Ensure replace button state returns to idle after Home Assistant restart

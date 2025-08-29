@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.19 - 2025-08-29
+- Fix button idle state and partial option updates
+
 ## 0.1.18 - 2025-08-29
 - Allow reconfiguring consumables from the UI including name, type, duration and expiry date override
 - Fix expiry date override parsing when provided as a string
