@@ -3,8 +3,17 @@ import sys
 import types
 from pathlib import Path
 
+
 def test_button_default_state(monkeypatch):
-    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "custom_components"))
+    package = types.ModuleType("consumable_expiration")
+    package.__path__ = [
+        str(
+            Path(__file__).resolve().parents[1]
+            / "custom_components"
+            / "consumable_expiration"
+        )
+    ]
+    monkeypatch.setitem(sys.modules, "consumable_expiration", package)
 
     ha_module = types.ModuleType("homeassistant")
     components = types.ModuleType("homeassistant.components")
@@ -13,6 +22,10 @@ def test_button_default_state(monkeypatch):
     class ButtonEntity:
         def __init__(self):
             self._attr_state = None
+        @property
+        def state(self):
+            return self._attr_state
+
         def async_write_ha_state(self):
             pass
     button_module.ButtonEntity = ButtonEntity

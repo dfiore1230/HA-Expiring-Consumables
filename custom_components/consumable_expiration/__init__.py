@@ -4,9 +4,6 @@ from __future__ import annotations
 import datetime as dt
 import logging
 
-import voluptuous as vol
-import homeassistant.helpers.config_validation as cv
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, ServiceCall
@@ -73,6 +70,9 @@ async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
 def _register_services(hass: HomeAssistant) -> None:
     if getattr(hass.data[DOMAIN], "services_registered", False):
         return
+
+    import voluptuous as vol
+    import homeassistant.helpers.config_validation as cv
 
     async def _resolve_entry_from_entity(hass: HomeAssistant, entity_id: str):
         emap: dict[str, str] = hass.data[DOMAIN]["entity_map"]
