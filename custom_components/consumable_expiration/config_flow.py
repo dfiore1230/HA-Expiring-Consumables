@@ -142,12 +142,12 @@ class ConsumableOptionsFlowHandler(config_entries.OptionsFlow):
 
         if user_input is not None:
             name = (user_input.get(CONF_NAME) or data.get(CONF_NAME, "")).strip()
-            item_type = user_input.get(CONF_ITEM_TYPE, data.get(CONF_ITEM_TYPE))
-            icon = user_input.get(CONF_ICON, data.get(CONF_ICON))
+            item_type = user_input.get(CONF_ITEM_TYPE) or data.get(CONF_ITEM_TYPE)
+            icon = user_input.get(CONF_ICON) or data.get(CONF_ICON)
             duration = int(
-                user_input.get(CONF_DURATION_DAYS, options.get(CONF_DURATION_DAYS))
+                user_input.get(CONF_DURATION_DAYS) or options.get(CONF_DURATION_DAYS)
             )
-            start_date = user_input.get(CONF_START_DATE, options.get(CONF_START_DATE))
+            start_date = user_input.get(CONF_START_DATE) or options.get(CONF_START_DATE)
             expiry_override = user_input.get(CONF_EXPIRY_DATE_OVERRIDE)
 
             if isinstance(start_date, str):
