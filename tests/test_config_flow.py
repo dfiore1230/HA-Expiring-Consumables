@@ -261,7 +261,11 @@ def test_config_flow_form_and_entry(monkeypatch):
     options_flow_partial = cf_module.ConsumableConfigFlow.async_get_options_flow(config_entry_partial)
     options_flow_partial.hass = hass
     asyncio.run(options_flow_partial.async_step_init())
-    user_partial = {cf_module.CONF_NAME: "Updated"}
+    user_partial = {
+        cf_module.CONF_NAME: "Updated",
+        cf_module.CONF_DURATION_DAYS: 30,
+        cf_module.CONF_START_DATE: "2024-01-01",
+    }
     result_partial = asyncio.run(options_flow_partial.async_step_init(user_input=user_partial))
     assert result_partial["data"][cf_module.CONF_START_DATE] == "2024-01-01"
     assert config_entry_partial.data[cf_module.CONF_NAME] == "Updated"
