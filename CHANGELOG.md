@@ -1,6 +1,9 @@
 # Changelog
 
-## 0.1.15 - 2025-08-28
+## 0.1.16 - 2025-08-29
+- Set default state of replace button to idle, set override expiry date to respect override start date + days
+
+## 0.1.15 - 2025-08-29
 - Set default state of replace button to idle, set override expiry date to respect override start date + days
 
 ## 0.1.14 - 2025-08-28
