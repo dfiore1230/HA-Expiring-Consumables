@@ -61,6 +61,10 @@
     "mark_replaced": {
       "name": "Mark replaced today",
       "description": "Sets the start date to today."
+    },
+    "set_expiry_date": {
+      "name": "Set expiry date",
+      "description": "Set the expiry/due date for a consumable entity (YYYY-MM-DD)."
     }
   }
-}
+ }
