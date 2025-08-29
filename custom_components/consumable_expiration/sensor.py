@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import datetime as dt
 from typing import Any
+import logging
 
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor.const import SensorStateClass
@@ -20,6 +21,8 @@ from .const import (
     CONF_START_DATE,
     CONF_ICON,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 PARALLEL_UPDATES = 0
 
@@ -112,6 +115,7 @@ class ConsumableExpirationSensor(SensorEntity):
                 y, m, d = map(int, start.split("-"))
                 start_date = dt.date(y, m, d)
             except Exception:
+                _LOGGER.debug("Failed to parse start_date '%s' for %s", start, self.entry.entry_id)
                 start_date = None
         elif isinstance(start, dt.date):
             start_date = start
@@ -120,5 +124,12 @@ class ConsumableExpirationSensor(SensorEntity):
         try:
             duration = int(duration) if duration is not None else None
         except Exception:
+            _LOGGER.debug("Invalid duration '%s' for %s", duration, self.entry.entry_id)
             duration = None
+        _LOGGER.debug(
+            "Parsed params for %s: duration=%s, start_date=%s",
+            self.entry.entry_id,
+            duration,
+            start_date,
+        )
         return duration, start_date
