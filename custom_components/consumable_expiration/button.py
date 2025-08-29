@@ -40,7 +40,9 @@ class MarkReplacedButton(ButtonEntity):
     def icon(self) -> str | None:
         return "mdi:backup-restore"
 
-    async def async_added_to_hass(self) -> None:
+    async def async_internal_added_to_hass(self) -> None:
+        """Handle entity which will be added to Home Assistant."""
+        await super().async_internal_added_to_hass()
         self._attr_state = "idle"
         self.async_write_ha_state()
 
