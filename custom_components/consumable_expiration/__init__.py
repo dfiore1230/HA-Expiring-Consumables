@@ -14,6 +14,7 @@ from .const import (
     CONF_DURATION_DAYS,
     CONF_START_DATE,
 )
+from .util import merge_entry_options
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -107,7 +108,7 @@ def _register_services(hass: HomeAssistant) -> None:
         entry = await _resolve_entry_from_entity(hass, entity_id)
         if not entry:
             return
-        options = {**entry.options, CONF_START_DATE: new_date.isoformat()}
+        options = merge_entry_options(entry, **{CONF_START_DATE: new_date.isoformat()})
         hass.config_entries.async_update_entry(entry, options=options)
 
     async def handle_set_duration(call: ServiceCall):
@@ -116,7 +117,7 @@ def _register_services(hass: HomeAssistant) -> None:
         entry = await _resolve_entry_from_entity(hass, entity_id)
         if not entry:
             return
-        options = {**entry.options, CONF_DURATION_DAYS: days}
+        options = merge_entry_options(entry, **{CONF_DURATION_DAYS: days})
         hass.config_entries.async_update_entry(entry, options=options)
 
     async def handle_mark_replaced(call: ServiceCall):
@@ -125,7 +126,7 @@ def _register_services(hass: HomeAssistant) -> None:
         if not entry:
             return
         today = dt.date.today().isoformat()
-        options = {**entry.options, CONF_START_DATE: today}
+        options = merge_entry_options(entry, **{CONF_START_DATE: today})
         hass.config_entries.async_update_entry(entry, options=options)
 
     hass.services.async_register(

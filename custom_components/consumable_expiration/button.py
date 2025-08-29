@@ -8,15 +8,17 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity
 
 from .const import DOMAIN, CONF_NAME, CONF_START_DATE
+from .util import merge_entry_options
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
     async_add_entities([MarkReplacedButton(hass, entry)])
 
 
-class MarkReplacedButton(ButtonEntity):
+class MarkReplacedButton(ButtonEntity, RestoreEntity):
     _attr_has_entity_name = True
     _attr_translation_key = "mark_replaced"
     _attr_state = "idle"
@@ -41,14 +43,18 @@ class MarkReplacedButton(ButtonEntity):
         return "mdi:backup-restore"
 
     async def async_added_to_hass(self) -> None:
-        """Reset state when the entity is added to Home Assistant."""
+        """Restore the previous state or reset to idle on startup."""
         await super().async_added_to_hass()
-        self._attr_state = "idle"
+        last_state = await self.async_get_last_state()
+        if last_state and last_state.state not in (None, "unknown"):
+            self._attr_state = last_state.state
+        else:
+            self._attr_state = "idle"
         self.async_write_ha_state()
 
     async def async_press(self) -> None:
         today = dt.date.today().isoformat()
-        options = {**self.entry.options, CONF_START_DATE: today}
+        options = merge_entry_options(self.entry, **{CONF_START_DATE: today})
         self.hass.config_entries.async_update_entry(self.entry, options=options)
         self._attr_state = dt.datetime.now().isoformat()
         self.async_write_ha_state()
