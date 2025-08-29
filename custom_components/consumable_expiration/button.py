@@ -9,8 +9,12 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+import logging
+
 from .const import DOMAIN, CONF_NAME, CONF_START_DATE
 from .util import merge_entry_options
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
@@ -45,11 +49,17 @@ class MarkReplacedButton(ButtonEntity):
         """Ensure the button starts in the idle state on startup."""
         await super().async_added_to_hass()
         self._attr_state = "idle"
+        _LOGGER.debug("MarkReplacedButton added for entry %s", self.entry.entry_id)
         self.async_write_ha_state()
 
     async def async_press(self) -> None:
         today = dt.date.today().isoformat()
         options = merge_entry_options(self.entry, **{CONF_START_DATE: today})
+        _LOGGER.debug(
+            "MarkReplacedButton pressed for entry %s; updating start_date to %s",
+            self.entry.entry_id,
+            today,
+        )
         self.hass.config_entries.async_update_entry(self.entry, options=options)
         self._attr_state = dt.datetime.now().isoformat()
         self.async_write_ha_state()
