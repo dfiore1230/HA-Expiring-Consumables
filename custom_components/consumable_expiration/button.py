@@ -40,6 +40,10 @@ class MarkReplacedButton(ButtonEntity):
     def icon(self) -> str | None:
         return "mdi:backup-restore"
 
+    async def async_added_to_hass(self) -> None:
+        self._attr_state = "idle"
+        self.async_write_ha_state()
+
     async def async_press(self) -> None:
         today = dt.date.today().isoformat()
         options = {**self.entry.options, CONF_START_DATE: today}
