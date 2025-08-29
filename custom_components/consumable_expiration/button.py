@@ -19,6 +19,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 class MarkReplacedButton(ButtonEntity):
     _attr_has_entity_name = True
     _attr_translation_key = "mark_replaced"
+    _attr_state = "idle"
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         self.hass = hass
@@ -43,3 +44,5 @@ class MarkReplacedButton(ButtonEntity):
         today = dt.date.today().isoformat()
         options = {**self.entry.options, CONF_START_DATE: today}
         self.hass.config_entries.async_update_entry(self.entry, options=options)
+        self._attr_state = dt.datetime.now().isoformat()
+        self.async_write_ha_state()
