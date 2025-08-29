@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.21 - 2025-08-29
+- Added update_expiry service, set idle staticlly on restart
+
 ## 0.1.20 - 2025-08-29
 - Maybe this time it will work??
 
