@@ -29,6 +29,8 @@ def test_button_default_state(monkeypatch):
 
         def async_write_ha_state(self):
             pass
+        async def async_internal_added_to_hass(self):
+            pass
     button_module.ButtonEntity = ButtonEntity
     components.button = button_module
     ha_module.components = components
@@ -102,6 +104,9 @@ def test_button_resets_state_on_add(monkeypatch):
 
         def async_write_ha_state(self):
             pass
+
+        async def async_internal_added_to_hass(self):
+            pass
     button_module.ButtonEntity = ButtonEntity
     components.button = button_module
     ha_module.components = components
@@ -149,6 +154,6 @@ def test_button_resets_state_on_add(monkeypatch):
     button = MarkReplacedButton(hass, entry)
     button._attr_state = "changed"
 
-    asyncio.run(button.async_added_to_hass())
+    asyncio.run(button.async_internal_added_to_hass())
 
     assert button.state == "idle"
