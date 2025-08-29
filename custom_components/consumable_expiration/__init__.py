@@ -94,6 +94,12 @@ def _register_services(hass: HomeAssistant) -> None:
             vol.Required("start_date"): cv.date,
         }
     )
+    set_expiry_date_schema = vol.Schema(
+        {
+            vol.Required("entity_id"): cv.entity_id,
+            vol.Required("expiry_date"): cv.date,
+        }
+    )
     set_duration_schema = vol.Schema(
         {
             vol.Required("entity_id"): cv.entity_id,
@@ -109,6 +115,19 @@ def _register_services(hass: HomeAssistant) -> None:
         if not entry:
             return
         options = merge_entry_options(entry, **{CONF_START_DATE: new_date.isoformat()})
+        hass.config_entries.async_update_entry(entry, options=options)
+
+    async def handle_set_expiry(call: ServiceCall):
+        entity_id = call.data["entity_id"]
+        new_expiry: dt.date = call.data["expiry_date"]
+        entry = await _resolve_entry_from_entity(hass, entity_id)
+        if not entry:
+            return
+        duration = entry.options.get(CONF_DURATION_DAYS) or entry.data.get(CONF_DURATION_DAYS)
+        if not duration:
+            raise vol.Invalid("Duration not configured")
+        start_date = new_expiry - dt.timedelta(days=duration)
+        options = merge_entry_options(entry, **{CONF_START_DATE: start_date.isoformat()})
         hass.config_entries.async_update_entry(entry, options=options)
 
     async def handle_set_duration(call: ServiceCall):
@@ -134,6 +153,9 @@ def _register_services(hass: HomeAssistant) -> None:
     )
     hass.services.async_register(
         DOMAIN, "set_duration", handle_set_duration, schema=set_duration_schema
+    )
+    hass.services.async_register(
+        DOMAIN, "set_expiry_date", handle_set_expiry, schema=set_expiry_date_schema
     )
     hass.services.async_register(
         DOMAIN, "mark_replaced", handle_mark_replaced, schema=mark_replaced_schema

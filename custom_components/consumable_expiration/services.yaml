@@ -42,3 +42,18 @@ mark_replaced:
       selector:
         entity:
           domain: sensor
+
+set_expiry_date:
+  name: Set expiry date
+  description: Set the expiry/due date for a consumable entity (YYYY-MM-DD)
+  fields:
+    entity_id:
+      description: Sensor entity to update
+      selector:
+        entity:
+          domain: sensor
+    expiry_date:
+      description: Expiry date (YYYY-MM-DD)
+      example: "2025-02-01"
+      selector:
+        date: {}
