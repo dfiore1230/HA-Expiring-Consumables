@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.20 - 2025-08-29
+- Maybe this time it will work??
+
 ## 0.1.19 - 2025-08-29
 - Fix button idle state and partial option updates
 
