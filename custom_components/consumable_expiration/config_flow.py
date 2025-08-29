@@ -29,6 +29,11 @@ _LOGGER = logging.getLogger(__name__)
 class ConsumableConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
+    def __init__(self) -> None:
+        """Store defaults shown to the user so we can detect changes."""
+        self._start_date_default: dt.date | None = None
+        self._duration_default: int = 90
+
     async def async_step_user(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         errors = {}
         if user_input is not None:
@@ -44,8 +49,15 @@ class ConsumableConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 start_date = dt.date.fromisoformat(start_date)
             if isinstance(expiry_override, str):
                 expiry_override = dt.date.fromisoformat(expiry_override)
+
             if expiry_override:
-                start_date = expiry_override - dt.timedelta(days=duration)
+                default_due = None
+                if self._start_date_default is not None:
+                    default_due = self._start_date_default + dt.timedelta(
+                        days=self._duration_default
+                    )
+                if default_due is not None and expiry_override != default_due:
+                    start_date = expiry_override - dt.timedelta(days=duration)
 
             if duration < 1:
                 errors["base"] = "invalid_duration"
@@ -71,6 +83,9 @@ class ConsumableConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(title=name, data=data, options=options)
 
         today = dt.date.today()
+        self._start_date_default = today
+        self._duration_default = 90
+        due_date = today + dt.timedelta(days=self._duration_default)
 
         schema = vol.Schema({
             vol.Required(CONF_NAME): selector.TextSelector(),
@@ -81,11 +96,11 @@ class ConsumableConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 )
             ),
             vol.Optional(CONF_ICON): selector.IconSelector(),
-            vol.Required(CONF_DURATION_DAYS, default=90): selector.NumberSelector(
+            vol.Required(CONF_DURATION_DAYS, default=self._duration_default): selector.NumberSelector(
                 selector.NumberSelectorConfig(min=1, max=1825, step=1, mode=selector.NumberSelectorMode.BOX)
             ),
             vol.Required(CONF_START_DATE, default=today): selector.DateSelector(),
-            vol.Optional(CONF_EXPIRY_DATE_OVERRIDE): selector.DateSelector(),
+            vol.Optional(CONF_EXPIRY_DATE_OVERRIDE, default=due_date): selector.DateSelector(),
         })
 
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
@@ -118,6 +133,8 @@ class ConsumableConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 class ConsumableOptionsFlowHandler(config_entries.OptionsFlow):
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         self.config_entry = config_entry
+        self._current_start_date: dt.date | None = None
+        self._current_duration: int | None = None
 
     async def async_step_init(self, user_input: dict | None = None) -> FlowResult:
         data = self.config_entry.data
@@ -127,7 +144,9 @@ class ConsumableOptionsFlowHandler(config_entries.OptionsFlow):
             name = (user_input.get(CONF_NAME) or data.get(CONF_NAME, "")).strip()
             item_type = user_input.get(CONF_ITEM_TYPE, data.get(CONF_ITEM_TYPE))
             icon = user_input.get(CONF_ICON, data.get(CONF_ICON))
-            duration = int(user_input.get(CONF_DURATION_DAYS, options.get(CONF_DURATION_DAYS)))
+            duration = int(
+                user_input.get(CONF_DURATION_DAYS, options.get(CONF_DURATION_DAYS))
+            )
             start_date = user_input.get(CONF_START_DATE, options.get(CONF_START_DATE))
             expiry_override = user_input.get(CONF_EXPIRY_DATE_OVERRIDE)
 
@@ -136,8 +155,12 @@ class ConsumableOptionsFlowHandler(config_entries.OptionsFlow):
             if isinstance(expiry_override, str):
                 expiry_override = dt.date.fromisoformat(expiry_override)
 
-            if expiry_override:
-                start_date = expiry_override - dt.timedelta(days=duration)
+            if expiry_override and self._current_start_date is not None:
+                default_due = self._current_start_date + dt.timedelta(
+                    days=self._current_duration or 0
+                )
+                if expiry_override != default_due:
+                    start_date = expiry_override - dt.timedelta(days=duration)
 
             new_data = data.copy()
             new_data.update({
@@ -167,6 +190,8 @@ class ConsumableOptionsFlowHandler(config_entries.OptionsFlow):
 
         duration = int(options.get(CONF_DURATION_DAYS, 90))
         due_date = current_date + dt.timedelta(days=duration)
+        self._current_start_date = current_date
+        self._current_duration = duration
 
         schema = vol.Schema({
             vol.Optional(CONF_NAME, default=data.get(CONF_NAME)): selector.TextSelector(),
@@ -181,6 +206,6 @@ class ConsumableOptionsFlowHandler(config_entries.OptionsFlow):
                 selector.NumberSelectorConfig(min=1, max=1825, step=1, mode=selector.NumberSelectorMode.BOX)
             ),
             vol.Optional(CONF_START_DATE, default=current_date): selector.DateSelector(),
-            vol.Optional(CONF_EXPIRY_DATE_OVERRIDE): selector.DateSelector(),
+            vol.Optional(CONF_EXPIRY_DATE_OVERRIDE, default=due_date): selector.DateSelector(),
         })
         return self.async_show_form(step_id="init", data_schema=schema)
