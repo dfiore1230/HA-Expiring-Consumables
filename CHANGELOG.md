@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.17 - 2025-08-29
+- Bug fix for 0.1.16
+
 ## 0.1.16 - 2025-08-29
 - Allow editing consumables without re-entering unchanged fields
 
