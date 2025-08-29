@@ -107,7 +107,7 @@ def test_button_resets_state_on_add(monkeypatch):
     assert button.state == "idle"
 
 
-def test_button_restores_last_state(monkeypatch):
+def test_button_does_not_restore_last_state(monkeypatch):
     last = types.SimpleNamespace(state="2024-01-01T00:00:00")
     core, config_entries = _setup_modules(monkeypatch, last_state=last)
     from consumable_expiration.button import MarkReplacedButton, CONF_NAME
@@ -119,4 +119,4 @@ def test_button_restores_last_state(monkeypatch):
     button = MarkReplacedButton(hass, entry)
     asyncio.run(button.async_added_to_hass())
 
-    assert button.state == "2024-01-01T00:00:00"
+    assert button.state == "idle"
