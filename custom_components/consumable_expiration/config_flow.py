@@ -171,11 +171,15 @@ class ConsumableConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     if hasattr(start_date, "isoformat")
                     else str(start_date),
                 }
-                return self.async_update_reload_and_abort(
+                self.hass.config_entries.async_update_entry(
                     entry,
-                    data_updates=updated_data,
-                    options_updates=updated_options,
-                    reason="reconfigure_successful",
+                    data=updated_data,
+                    options=updated_options,
+                )
+                return self.async_create_entry(
+                    title=name,
+                    data=updated_data,
+                    options=updated_options,
                 )
 
         schema = vol.Schema({
