@@ -1,4 +1,3 @@
-
 {
   "title": "HA Expiring Consumables",
   "config": {
@@ -6,6 +5,18 @@
       "user": {
         "title": "Add a consumable",
         "description": "Create a sensor that counts days remaining until replacement is due.",
+        "data": {
+          "name": "Name",
+          "item_type": "Item type",
+          "icon": "Icon",
+          "duration_days": "Duration (days)",
+          "start_date": "Start date",
+          "expiry_date_override": "Expiry date override"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure consumable",
+        "description": "Update name, type, duration, start date, icon, or override expiry date.",
         "data": {
           "name": "Name",
           "item_type": "Item type",
@@ -67,4 +78,4 @@
       "description": "Set the expiry/due date for a consumable entity (YYYY-MM-DD)."
     }
   }
- }
+}
