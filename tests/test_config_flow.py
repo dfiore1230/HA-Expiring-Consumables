@@ -296,7 +296,7 @@ def test_config_flow_form_and_entry(monkeypatch):
     assert config_entry_none.data[cf_module.CONF_ICON] == "mdi:filter"
     assert result_none["data"][cf_module.CONF_START_DATE] == "2024-01-01"
 
-    # Test reconfigure flow delegates to options flow
+    # Test reconfigure flow updates entry data and options
     config_entry2 = cf_module.config_entries.ConfigEntry()
     config_entry2.entry_id = "abc123"
     config_entry2.data = {
@@ -316,8 +316,9 @@ def test_config_flow_form_and_entry(monkeypatch):
         def async_get_entry(self, entry_id):
             return self._entry
 
-        def async_update_entry(self, entry, data=None):
+        def async_update_entry(self, entry, data=None, options=None, **kwargs):
             entry.data = data or entry.data
+            entry.options = options or entry.options
 
     hass2 = core.HomeAssistant()
     hass2.config_entries = DummyConfigEntries2(config_entry2)
@@ -337,4 +338,4 @@ def test_config_flow_form_and_entry(monkeypatch):
     result5 = asyncio.run(flow3.async_step_reconfigure(user_input=user_input4))
     assert result5["type"] == "create_entry"
     assert config_entry2.data[cf_module.CONF_NAME] == "New"
-    assert result5["data"][cf_module.CONF_DURATION_DAYS] == 20
+    assert result5["options"][cf_module.CONF_DURATION_DAYS] == 20
