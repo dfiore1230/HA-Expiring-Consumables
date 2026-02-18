@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.22 - 2026-02-18
+- Added the ability to modify the entity duration
+- Added logging
+
 ## 0.1.21 - 2025-08-29
 - Added update_expiry service, set idle staticlly on restart
 
