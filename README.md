@@ -27,6 +27,7 @@ Home Assistant custom integration to track the life span of consumable items suc
    - `consumable_expiration.mark_replaced`
 
 ## Changelog
+- **0.1.22** - Added the ability to modify the entity duration, added logging
 - **0.1.21** - Added update_expiry service, set idle staticlly on restart
 - **0.1.20** - Maybe this time it will work??
 - **0.1.19** - Fix button idle state and partial option updates
